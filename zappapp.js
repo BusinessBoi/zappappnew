@@ -12,6 +12,9 @@ const twilioClient	= twilio(
 
 const openai		= new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 
+// Store conversation threads based on WhatsApp numbers
+const threads	= new Map();
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
@@ -23,65 +26,55 @@ app.post("/whatsapp", async(req, res) =>
 
 	try
 	{
-		// Assuming assistant ID already retrieved
-		const thread	= await openai.beta.threads.create();
-		await openai.beta.threads.messages.create(thread.id,
+		let thread	= threads.get(from);
+
+		if (!thread)
 		{
-			role: "user",
-			content: incomingMsg
-		});
+			// Create new thread for first message
+			thread	= await openai.beta.threads.create();
+			threads.set(from, thread);
+		}
+
+		// Add user's message to conversation
+		await openai.beta.threads.messages.create(
+			thread.id,
+			{
+				role: "user",
+				content: incomingMsg
+			}
+		);
+
+		// Run OpenAI on entire conversation
 		const run	= await openai.beta.threads.runs.create(
 			thread.id,
 			{assistant_id: "asst_LAi3M1Lo1iVOBVKgIFcjkKFQ"}
 		);
 
-		let runStatus;
-		let retries	= 3; // Number of retries
-		do
-		{
-			await new Promise(resolve => setTimeout(resolve, 1000));
-			runStatus	= await openai.beta.threads.runs.retrieve(
-				thread.id,
-				run.id
-			);
-			retries--;
-		}
-		while
-		(retries > 0 &&
-			(runStatus === null || runStatus.status !== "completed")
-		);
+		// Wait for completion
+		await waitForCompletion(thread.id, run.id);
 
-		if (runStatus && runStatus.status === "completed")
-		{
-			const messages	= await openai.beta.threads.messages.list(
-				thread.id
-			);
-			const reply		= messages.data.find(m => m.role === "assistant")
-			?.content[0].text.value;
+		// Retrieve messages and find assistant reply
+		const messages	= await openai.beta.threads.messages.list(thread.id);
+		const reply		= messages.data.find(m => m.role === "assistant")
+		?.content[0].text.value;
 
-			if (typeof reply === "string" && reply.trim().length > 0)
+		if (typeof reply === "string" && reply.trim().length > 0)
+		{
+			// Send OpenAI response back to sender via Twilio
+			await twilioClient.messages.create(
 			{
-				// Send OpenAI response back to sender via Twilio
-				await twilioClient.messages.create(
-				{
-					body: reply,
-					from: "whatsapp:+14155238886", // Twilio WhatsApp number
-					to: from
-				});
-				res.status(200).send("Message processed");
-			}
-			else
-			{
-				console.error("Error: Empty or whitespace reply from OpenAI.");
-				res.status(200).send(
-					"Received empty response from OpenAI, no message sent."
-				);
-			}
+				body: reply,
+				from: "whatsapp:+14155238886", // Twilio WhatsApp number
+				to: from
+			});
+			res.status(200).send("Message processed");
 		}
 		else
 		{
-			console.error("Error: No reply from OpenAI after retries.");
-			res.status(200).send("No response from OpenAI, no message sent.");
+			console.error("Error: Empty or whitespace reply from OpenAI.");
+			res.status(200).send(
+				"Received empty response from OpenAI, no message sent."
+			);
 		}
 	}
 	catch (error) 
@@ -90,6 +83,18 @@ app.post("/whatsapp", async(req, res) =>
 		res.status(500).send("Internal Server Error");
 	}
 });
+
+async function waitForCompletion(threadId, runId)
+{
+	let runStatus;
+
+	do
+	{
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		runStatus	= await openai.beta.threads.runs.retrieve(threadId, runId);
+	}
+	while (runStatus === null || runStatus.status !== "completed");
+}
 
 // Start the server
 const PORT = process.env.PORT || 3000;
