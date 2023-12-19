@@ -90,7 +90,7 @@ async function waitForCompletion(threadId, runId)
 
 	do
 	{
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+		await new Promise((resolve) => setTimeout(resolve, 100));
 		runStatus	= await openai.beta.threads.runs.retrieve(threadId, runId);
 	}
 	while (runStatus === null || runStatus.status !== "completed");
