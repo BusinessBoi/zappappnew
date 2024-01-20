@@ -10,53 +10,38 @@ const twilioClient	= twilio(
 	process.env.TWILIO_AUTH_TOKEN
 );
 
-const openai		= new OpenAI({apiKey: process.env.OPENAI_API_KEY});
+const openai	= new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 
-// Store conversation threads based on WhatsApp numbers
-const threads	= new Map();
+let messages	= [];
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 // Twilio WhatsApp webhook endpoint
-app.post("/whatsapp", async(req, res) =>
+app.post("/whatsapp", async (req, res) =>
 {
 	const incomingMsg	= req.body.Body; // Message received from WhatsApp
 	const from			= req.body.From; // Sender's WhatsApp number
 
 	try
 	{
-		let thread	= threads.get(from);
+		messages.push({"role": "user", "content": incomingMsg});
 
-		if (!thread)
+		// Call Chat Completions API
+		const response	= await openai.chat.completions.create(
 		{
-			// Create new thread for first message
-			thread	= await openai.beta.threads.create();
-			threads.set(from, thread);
-		}
+			messages:		messages,
+			model:			"gpt-4-1106-preview",
+			temperature:	0.5
+		});
 
-		// Add user's message to conversation
-		await openai.beta.threads.messages.create(
-			thread.id,
-			{
-				role: "user",
-				content: incomingMsg
-			}
-		);
+		let currentResponse	= "";
+		currentResponse		+= response.choices[0].message.content;
+		messages.push({"role": "assistant", "content": currentResponse});
 
-		// Run OpenAI on entire conversation
-		const run	= await openai.beta.threads.runs.create(
-			thread.id,
-			{assistant_id: "asst_LAi3M1Lo1iVOBVKgIFcjkKFQ"}
-		);
-
-		// Wait for completion
-		await waitForCompletion(thread.id, run.id);
-
-		// Retrieve messages and find assistant reply
-		const messages	= await openai.beta.threads.messages.list(thread.id);
-		const reply		= messages.data.find(m => m.role === "assistant")
-		?.content[0].text.value;
+		// Find reply
+		const reply	= messages.find(msg => msg.role === "assistant")
+			?.content;
 
 		if (typeof reply === "string" && reply.trim().length > 0)
 		{
@@ -71,7 +56,7 @@ app.post("/whatsapp", async(req, res) =>
 		}
 		else
 		{
-			console.error("Error: Empty or whitespace reply from OpenAI.");
+			console.error("Error: Invalid response from OpenAI.");
 			res.status(200).send(
 				"Received empty response from OpenAI, no message sent."
 			);
@@ -84,18 +69,6 @@ app.post("/whatsapp", async(req, res) =>
 	}
 });
 
-async function waitForCompletion(threadId, runId)
-{
-	let runStatus;
-
-	do
-	{
-		await new Promise((resolve) => setTimeout(resolve, 100));
-		runStatus	= await openai.beta.threads.runs.retrieve(threadId, runId);
-	}
-	while (runStatus === null || runStatus.status !== "completed");
-}
-
-// Start the server
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
