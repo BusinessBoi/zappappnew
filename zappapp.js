@@ -61,6 +61,18 @@ app.post("/whatsapp", async(req, res) =>
 	}
 });
 
+async function waitForCompletion(threadId, runId)
+{
+	let runStatus;
+
+	do
+	{
+		await new Promise((resolve) => setTimeout(resolve, 100));
+		runStatus	= await openai.beta.threads.runs.retrieve(threadId, runId);
+	}
+	while (runStatus === null || runStatus.status !== "completed");
+}
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
