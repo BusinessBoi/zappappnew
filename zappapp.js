@@ -12,28 +12,36 @@ const twilioClient	= twilio(
 
 const openai	= new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 
-// Store conversation threads based on WhatsApp numbers
-const threads	= new Map();
+let messages	= [];
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 // Twilio WhatsApp webhook endpoint
-app.post("/whatsapp", async(req, res) =>
+app.post("/whatsapp", async (req, res) =>
 {
 	const incomingMsg	= req.body.Body; // Message received from WhatsApp
 	const from			= req.body.From; // Sender's WhatsApp number
 
 	try
 	{
+		messages.push({"role": "user", "content": incomingMsg});
+
 		// Call Chat Completions API
-		const completion	= await openai.chat.completions.create(
+		const response	= await openai.chat.completions.create(
 		{
-			messages:	[{"role": "user", "content": incomingMsg}],
-			model:		"gpt-4-1106-preview"
+			messages:		messages,
+			model:			"gpt-4-1106-preview",
+			temperature:	0.5
 		});
 
-		let reply	= completion.choices[0].message.content;
+		let currentResponse	= "";
+		currentResponse		+= response.choices[0].message.content;
+		messages.push({"role": "assistant", "content": currentResponse});
+
+		// Find reply
+		const reply	= messages.find(msg => msg.role === "assistant")
+			?.content;
 
 		if (typeof reply === "string" && reply.trim().length > 0)
 		{
@@ -61,18 +69,6 @@ app.post("/whatsapp", async(req, res) =>
 	}
 });
 
-async function waitForCompletion(threadId, runId)
-{
-	let runStatus;
-
-	do
-	{
-		await new Promise((resolve) => setTimeout(resolve, 100));
-		runStatus	= await openai.beta.threads.runs.retrieve(threadId, runId);
-	}
-	while (runStatus === null || runStatus.status !== "completed");
-}
-
-// Start the server
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
