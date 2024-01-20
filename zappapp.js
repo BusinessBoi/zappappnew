@@ -60,3 +60,7 @@ app.post("/whatsapp", async(req, res) =>
 		res.status(500).send("Internal Server Error");
 	}
 });
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
