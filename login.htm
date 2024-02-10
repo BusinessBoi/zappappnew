@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Zapp Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
   <link rel="stylesheet" href="styles/styles.css">
 </head>
 
@@ -80,10 +81,30 @@
           <span class="dot" onclick="currentSlide(3)"></span>
         </div>
       </div>
+      <div class="login-interface">
+        <h2>Log In</h2>
+        <p>Log in to your dashboard to manage active Zapps.</p>
+        <form>
+          <label for="email">Email <span class="required">*</span></label>
+          <br />
+          <input type="text" />
+          <br />
+          <label for="password">Password <span class="required">*</span></label>
+          <br />
+          <div class="password-container">
+            <input type="password" id="password"/>
+            <i class="fa-solid fa-eye" id="eye"></i>
+          </div>
+          <br />
+          <button type="submit">Sign In</button>
+        </form>
+        <p>Don&rsquo;t have an account? <a href="#">Sign Up</a></p>
+      </div>
     </div>
   </div>
 
   <script src="scripts/slide.js"></script>
+  <script src="scripts/showhide.js"></script>
 </body>
 
 </html>
