@@ -25,6 +25,13 @@ app.post("/whatsapp", async (req, res) => {
 	try {
 		messages.push({ "role": "user", "content": incomingMsg });
 
+		// Immediately respond with a waiting message
+		await twilioClient.messages.create({
+			body: "Finding that out for you now 👀",
+			from: "whatsapp:+14155238886", // Twilio WhatsApp number
+			to: from
+		});
+
 		// Call Chat Completions API
 		const response = await openai.chat.completions.create(
 			{
