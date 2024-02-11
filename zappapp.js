@@ -27,7 +27,7 @@ app.post("/whatsapp", async (req, res) => {
 
 		// Immediately respond with a waiting message
 		await twilioClient.messages.create({
-			body: "Finding that out for you now 👀",
+			body: "Please wait\u2026",
 			from: "whatsapp:+14155238886", // Twilio WhatsApp number
 			to: from
 		});
