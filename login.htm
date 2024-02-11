@@ -2,109 +2,125 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Zapp Dashboard</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-  <link rel="stylesheet" href="styles/styles.css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Log In | Zapp</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+	<link rel="stylesheet" href="styles/styles.css">
 </head>
 
 <body>
-  <nav>
-    <ul class="navigation">
-      <li><a href="index.htm">
-          <img src="img/logodark.webp" alt="Homepage logo" />
-        </a></li>
-      <li class="right nav-active"><a href="login.htm">Log in</a></li>
-    </ul>
-  </nav>
-  <div class="main-content">
-    <div class="login-container">
-      <div class="intro-text">
-        <h1>Start Zapping.</h1>
-        <p>
-          Register or log in to Zapp to build or manage an existing chatbot.
-        </p>
-        <div class="slideshow-container">
-          <div class="slide fade">
-            <p>
-              Zapp has been a game-changer for my bakery! With its quick and
-              accurate responses, I can focus on baking delicious treats while
-              Zapp handles customer queries effortlessly. My customers love the
-              instant assistance, and it has definitely boosted our customer
-              satisfaction levels.
-            </p>
-            <p>
-              <strong>Lisa M.</strong>
-              <br />
-              Owner of Sweet Delights Bakery
-            </p>
-          </div>
+	<nav>
+		<ul class="navigation">
+			<li><a href="index.htm">
+					<img src="img/logodark.webp" alt="Homepage logo" />
+				</a></li>
+			<li class="right nav-active"><a href="login.htm">Log in</a></li>
+		</ul>
+	</nav>
+	<div class="main-content">
+		<div class="login-container">
+			<div class="intro-text">
+				<h1>Start Zapping.</h1>
+				<p>
+					Register or log in to Zapp to build or manage an existing
+					chatbot.
+				</p>
+				<div class="slideshow-container">
+					<div class="slide fade">
+						<p>
+							Zapp has been a game-changer for my bakery! With its
+							quick and accurate responses, I can focus on baking
+							delicious treats while Zapp handles customer queries
+							effortlessly. My customers love the instant
+							assistance, and it has definitely boosted our
+							customer satisfaction levels.
+						</p>
+						<p>
+							<strong>Lisa M.</strong>
+							<br />
+							Owner of Sweet Delights Bakery
+						</p>
+					</div>
 
-          <div class="slide fade">
-            <p>
-              I run a cozy bookstore, and Zapp has become my virtual assistant.
-              It handles customer inquiries smoothly, providing helpful
-              information about book availability and upcoming events. The time
-              and stress it saves me are priceless. Zapp truly understands the
-              needs of small businesses like mine!
-            </p>
-            <p>
-              <strong>Ethan H.</strong>
-              <br />
-              Owner of Book Haven
-            </p>
-          </div>
+					<div class="slide fade">
+						<p>
+							I run a cosy bookstore, and Zapp has become my
+							virtual assistant. It handles customer enquiries
+							smoothly, providing helpful information about book
+							availability and upcoming events. The time and
+							stress it saves me are priceless. Zapp truly
+							understands the needs of small businesses like mine!
+						</p>
+						<p>
+							<strong>Ethan H.</strong>
+							<br />
+							Owner of Book Haven
+						</p>
+					</div>
 
-          <div class="slide fade">
-            <p>
-              As a fitness studio owner, I wear many hats, but thanks to Zapp,
-              managing customer inquiries is a breeze. It swiftly responds to
-              questions about class schedules, membership details, and more.
-              Zapp has become an integral part of my business, enhancing
-              customer experience and allowing me to focus on what I love –
-              helping people achieve their fitness goals!
-            </p>
-            <p>
-              <strong>Olivia S.</strong>
-              <br />
-              Founder of Active Life Studios
-            </p>
-          </div>
+					<div class="slide fade">
+						<p>
+							As a fitness studio owner, I wear many hats, but
+							thanks to Zapp, managing customer enquiries is a
+							breeze. It swiftly responds to questions about class
+							schedules, membership details, and more. Zapp has
+							become an integral part of my business, enhancing
+							customer experience and allowing me to focus on what
+							I love &ndash; helping people achieve their fitness
+							goals!
+						</p>
+						<p>
+							<strong>Olivia S.</strong>
+							<br />
+							Founder of Active Life Studios
+						</p>
+					</div>
 
-          <a class="prev" onclick="plusSlides(-1)">&lsaquo;</a>
-          <a class="next" onclick="plusSlides(1)">&rsaquo;</a>
-        </div>
-        <div style="text-align: center">
-          <span class="dot" onclick="currentSlide(1)"></span>
-          <span class="dot" onclick="currentSlide(2)"></span>
-          <span class="dot" onclick="currentSlide(3)"></span>
-        </div>
-      </div>
-      <div class="login-interface">
-        <h2>Log In</h2>
-        <p>Log in to your dashboard to manage active Zapps.</p>
-        <form>
-          <label for="email">Email <span class="required">*</span></label>
-          <br />
-          <input type="text" />
-          <br />
-          <label for="password">Password <span class="required">*</span></label>
-          <br />
-          <div class="password-container">
-            <input type="password" id="password"/>
-            <i class="fa-solid fa-eye" id="eye"></i>
-          </div>
-          <br />
-          <button type="submit">Sign In</button>
-        </form>
-        <p>Don&rsquo;t have an account? <a href="#">Sign Up</a></p>
-      </div>
-    </div>
-  </div>
+					<a class="prev" onclick="plusSlides(-1)">&lsaquo;</a>
+					<a class="next" onclick="plusSlides(1)">&rsaquo;</a>
+				</div>
+				<div style="text-align: center">
+					<span class="dot" onclick="currentSlide(1)" tabindex="0"></span>
+					<span class="dot" onclick="currentSlide(2)" tabindex="0"></span>
+					<span class="dot" onclick="currentSlide(3)" tabindex="0"></span>
+				</div>
+			</div>
+			<div class="login-interface">
+				<h2>Log in</h2>
+				<p>Log in to your dashboard to manage active Zapps.</p>
+				<form>
+					<label for="email">
+						Email <span class="required">*</span>
+					</label>
+					<br />
+					<input id="email" type="text" />
+					<br />
+					<label for="password">
+						Password <span class="required">*</span>
+					</label>
+					<br />
+					<div class="password-container">
+						<input type="password" id="password"/>
+						<i class="fa-solid fa-eye" id="eye"></i>
+					</div>
+					<br />
+					<div class="login-button-container">
+						<button type="submit" class="login-button">
+							Log in
+						</button>
+					</div>
+				</form>
+				<p class="signup-prompt">
+					Don&rsquo;t have an account?
+					<a href="register.htm">Sign up</a>
+				</p>
+			</div>
+		</div>
+	</div>
 
-  <script src="scripts/slide.js"></script>
-  <script src="scripts/showhide.js"></script>
+	<script src="scripts/slide.js"></script>
+	<script src="scripts/showhide.js"></script>
 </body>
 
 </html>
