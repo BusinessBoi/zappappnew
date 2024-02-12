@@ -8,7 +8,7 @@ html {
 }
 
 body {
-	font-family: system-ui;
+	font-family: system-ui, monospace;
 	margin: 0;
 	padding: 0;
 	width: 100%;
@@ -56,14 +56,39 @@ strong {
 	height: calc(100vh - 68px);
 }
 
-.login-container {
-	display: grid;
-	grid-template-columns: 1fr 12px 1fr;
-	height: 100%;
+@media screen and (min-width: 720px) {
+	.login-container {
+		display: grid;
+		grid-template-columns: 1fr 12px 1fr;
+		height: 100%;
+	}
+
+	.intro-text {
+		grid-column: 1;
+	}
+
+	.login-interface {
+		grid-column: 3;
+	}
+}
+
+
+@media screen and (max-width: 720px) {
+	.login-container {
+		display: grid;
+		grid-template-rows: 1fr 12px 1fr;
+	}
+
+	.intro-text {
+		grid-row: 1;
+	}
+
+	.login-interface {
+		grid-row: 3;
+	}
 }
 
 .intro-text {
-	grid-column: 1;
 	background-color: #131314;
 	color: #ffffff;
 	padding: 16px;
@@ -71,14 +96,12 @@ strong {
 }
 
 .login-interface {
-	grid-column: 3;
 	padding: 16px;
 	border: 4px solid #000000;
 	border-radius: 12px;
 }
 
-.login-interface p
-{
+.login-interface p {
 	color: #626262;
 }
 
