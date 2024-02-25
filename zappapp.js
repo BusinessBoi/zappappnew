@@ -6,8 +6,8 @@ import twilio from "twilio";
 // Initialise Express and Twilio client
 const app = express();
 const twilioClient = twilio(
-    process.env.TWILIO_ACCOUNT_SID,
-    process.env.TWILIO_AUTH_TOKEN
+	process.env.TWILIO_ACCOUNT_SID,
+	process.env.TWILIO_AUTH_TOKEN
 );
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -65,17 +65,16 @@ const systemPrompt = {
 	KEEP YOUR RESPONESEs CONCISE\
 	KEEP YOUR RESPONSES UNDER 2 SENTANCES, UNLESS YOU ARE EXPLAINING A SERVICEM, PRODUCTS, UPSELLING OR CROSS SELLING TO THE CUSTOMER.\
     USE YOUR BROWSE FEATURE TO CHECK THE DATES ON CALENDLY URLS IF NOT JUST GIVE THE CUSTOMER THE LINK"
-
 };
 
 // Twilio WhatsApp webhook endpoint
 app.post("/whatsapp", async (req, res) => {
-    const incomingMsg = req.body.Body; // Message received from WhatsApp
-    const from = req.body.From; // Sender's WhatsApp number
+	const incomingMsg = req.body.Body; // Message received from WhatsApp
+	const from = req.body.From; // Sender's WhatsApp number
 
-    try {
-        messages.push({ "role": "user", "content": incomingMsg });
-
+	try {
+		messages.push({ "role": "user", "content": incomingMsg });
+    
         // Immediately respond with a waiting message
         await twilioClient.messages.create({
             body: "...",
@@ -92,41 +91,41 @@ app.post("/whatsapp", async (req, res) => {
             });
         }, 1000); // Delay of 1000 milliseconds (1 second)
 
-        // Insert system prompt here
-        messages.push(systemPrompt);
+		// Insert system prompt here
+		messages.push(systemPrompt);
 
-        // Call Chat Completions API
-        const response = await openai.chat.completions.create({
-            messages: messages,
-            model: "gpt-4-1106-preview",
-            temperature: 0.5
-        });
+		// Call Chat Completions API
+		const response = await openai.chat.completions.create({
+			messages: messages,
+			model: "gpt-4-1106-preview",
+			temperature: 0.5
+		});
 
-        let currentResponse = "";
-        currentResponse += response.choices[0].message.content;
-        messages.push({ "role": "assistant", "content": currentResponse });
+		let currentResponse = "";
+		currentResponse += response.choices[0].message.content;
+		messages.push({ "role": "assistant", "content": currentResponse });
 
-        // Reply will be last element of messages array
-        const reply = messages[messages.length - 1]?.content;
+		// Reply will be last element of messages array
+		const reply = messages[messages.length - 1]?.content;
 
-        if (typeof reply === "string" && reply.trim().length > 0) {
-            // Send OpenAI response back to sender via Twilio
-            await twilioClient.messages.create({
-                body: reply,
-                from: "whatsapp:+14155238886", // Twilio WhatsApp number
-                to: from
-            });
-            res.status(200).send("Message processed");
-        } else {
-            console.error("Error: Invalid response from OpenAI.");
-            res.status(200).send(
-                "Received empty response from OpenAI, no message sent."
-            );
-        }
-    } catch (error) {
-        console.error("Error processing WhatsApp message:", error);
-        res.status(500).send("Internal Server Error");
-    }
+		if (typeof reply === "string" && reply.trim().length > 0) {
+			// Send OpenAI response back to sender via Twilio
+			await twilioClient.messages.create({
+				body: reply,
+				from: "whatsapp:+14155238886",
+				to: from
+			});
+			res.status(200).send("Message processed");
+		} else {
+			console.error("Error: Invalid response from OpenAI.");
+			res.status(200).send(
+				"Received empty response from OpenAI, no message sent."
+			);
+		}
+	} catch (error) {
+		console.error("Error processing WhatsApp message:", error);
+		res.status(500).send("Internal Server Error");
+	}
 });
 
 // Start server
